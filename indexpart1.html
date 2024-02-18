@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+        <p></p>
+        </div>
+      </div>
+  </div>
+
+    <div class="container-fluid" id="mainContainer">
+      <div class="row">
+        <div class="col"></div>
+        <div class="col-4 text-center" >
+         Facts about Numbers
+        </div>
+        <div class="col"></div>
+      </div>
+      <div class="row">
+        <div class="col"></div>
+        <div class="col-4 text-center" >
+         <p></p>
+        </div>
+        <div class="col"></div>
+      </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+      <p></p>
+      </div>
+    </div>
+</div>
+
+  <div class="container-fluid" id="mainContainer2">
+    <div class="row">
+      <div class="col"></div>
+      <div class="col-4 text-center" >
+       Facts about my favorite Number 2
+      </div>
+      <div class="col"></div>
+    </div>
+    <div class="row">
+      <div class="col"></div>
+      <div class="col-4 text-center" >
+       <p></p>
+      </div>
+      <div class="col"></div>
+    </div>
+</div>
+
+     
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+let baseURL = "http://numbersapi.com";
+  
+axios.get(`${baseURL}/5/math`, {
+headers: {'Content-Type': 'application/json'}
+})
+.then((res) => console.log(res.data))
+.catch((err) => console.error(err));
+
+let fourNumbersPromises = [];
+
+for (let i = 1; i < 5; i++) {
+  fourNumbersPromises.push(axios.get(`http://numbersapi.com/${i}/math`,{headers: {'Content-Type': 'application/json'}})
+  );
+}
+
+Promise.all(fourNumbersPromises)
+  .then(factNumberArr => (
+    factNumberArr.forEach(p => CreateDivElement(p.data,"mainContainer") )
+  ))
+  .catch(err => console.log(err));
+
+  function CreateDivElement (fact,container)
+  {
+   
+    const mainContainer = document.getElementById(container);
+    const row = document.createElement("div");
+    row.classList.add('row');
+    const col1 = document.createElement("div");
+    col1.classList.add('col');
+    const col2 = document.createElement("div");
+    col2.classList.add('col-4');
+    col2.classList.add('border');
+    col2.classList.add('border-primary');
+    col2.classList.add('text-center');
+    col2.innerText=fact;
+    const col3 = document.createElement("div");
+    col3.classList.add('col');
+    row.append(col1);
+    row.append(col2);
+    row.append(col3);
+    mainContainer.append(row);
+   
+  }
+
+  let favoriteNumberPromises = [];
+
+for (let i = 1; i < 5; i++) {
+  const category = (i === 1 || i === 3) ? "math" : "trivia";
+  favoriteNumberPromises.push(axios.get(`http://numbersapi.com/2/${category}`,{headers: {'Content-Type': 'application/json'}}));
+}
+
+Promise.all(favoriteNumberPromises)
+  .then(favoriteNumberfactNumberArr => (
+    favoriteNumberfactNumberArr.forEach(p => CreateDivElement(p.data, "mainContainer2") )
+  ))
+  .catch(err => console.log(err));
+
+
+
+  
+</script>   
+  </body>
+</html>
